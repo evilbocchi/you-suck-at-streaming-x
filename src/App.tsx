@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from "react";
 import BpmChart from "./components/BpmChart";
 import KeyBindingControl from "./components/KeyBindingControl";
 import StatsPanel from "./components/StatsPanel";
@@ -99,14 +99,14 @@ const App = () => {
         return () => window.removeEventListener("keydown", handleKeyCapture);
     }, [allKeys, bindings, listening]);
 
-    const startCapture = (hotkey: HotkeyId, index: number) => {
+    const startCapture = useCallback((hotkey: HotkeyId, index: number) => {
         setBindingError(null);
         setListening({ hotkey, index });
-    };
+    }, []);
 
-    const handleSnapChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const handleSnapChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
         setSnap(Number(event.target.value));
-    };
+    }, []);
 
     return (
         <div className="min-h-screen bg-slate-950 pb-16">

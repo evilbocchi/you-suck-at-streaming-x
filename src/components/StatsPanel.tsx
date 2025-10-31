@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { TapMetrics } from "../hooks/useTapTracker";
 
 const formatNumber = (value: number, digits = 1): string => {
@@ -14,7 +15,7 @@ type StatsPanelProps = {
     snap: number;
 };
 
-const StatsPanel = ({ metrics, totalTaps, snap }: StatsPanelProps) => {
+const StatsPanel = memo(({ metrics, totalTaps, snap }: StatsPanelProps) => {
     return (
         <div className="grid gap-4 grid-cols-3">
             <div className="rounded-lg border border-slate-800 bg-slate-900/70 p-4">
@@ -56,6 +57,8 @@ const StatsPanel = ({ metrics, totalTaps, snap }: StatsPanelProps) => {
             </div>
         </div>
     );
-};
+});
+
+StatsPanel.displayName = "StatsPanel";
 
 export default StatsPanel;

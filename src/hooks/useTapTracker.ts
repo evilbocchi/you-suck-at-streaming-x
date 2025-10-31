@@ -23,8 +23,8 @@ type TapEvent = {
     key: string;
 };
 
-const MIN_TAPS_FOR_CALCULATION = 50;
-const MAX_TAPS_FOR_CALCULATION = 50;
+const MIN_TAPS_FOR_CALCULATION = 30;
+const MAX_TAPS_FOR_CALCULATION = 150;
 const HISTORY_MS = 20000;
 const SERIES_MS = 30000;
 const RESET_BASE_MS = 5000; // 5 seconds base timeout
@@ -121,11 +121,6 @@ type BpmSeriesAction = {
 
 const bpmSeriesReducer = (state: BpmSeriesState, action: BpmSeriesAction): BpmSeriesState => {
     if (action.type === "UPDATE") {
-        // Only update if bpm or timestamp changed
-        if (action.bpm === state.lastBpm && action.timestamp === state.lastTimestamp) {
-            return state;
-        }
-
         const cutoff = action.timestamp - SERIES_MS;
         const trimmed = state.samples.filter((sample) => sample.timestamp >= cutoff);
         const updated = [...trimmed, { timestamp: action.timestamp, bpm: action.bpm }];
@@ -335,7 +330,7 @@ export const useTapTracker = (bindings: KeyBindings, snap: number) => {
 
     useEffect(() => {
         // Only record BPM samples when we have enough taps to calculate meaningful metrics
-        if (windowEvents.length >= 3) {
+        if (windowEvents.length >= 3 && metrics.bpm > 0) {
             dispatchBpmSeries({
                 type: "UPDATE",
                 bpm: metrics.bpm,
